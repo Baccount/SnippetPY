@@ -4,6 +4,9 @@ from os import path
 import tkinter as tk
 import sqlite3
 
+# clear the listbox
+def clear_listbox():
+    listbox.delete(0, "end")
 
 # Add a new snippet
 def add_snippet():
@@ -11,6 +14,7 @@ def add_snippet():
     txt = text.get("1.0", "end-1c")
     # save the text
     save_snippet(txt)
+    load_snippets()
 
 def delete_snippet():
     # delete the selected snippet in the listbox
@@ -18,6 +22,7 @@ def delete_snippet():
     # delete the snippet from the database
     conn = sqlite3.connect("snippets.db")
     c = conn.cursor()
+    # delete the snippet from the database using the snippet name and index
     c.execute("DELETE FROM snippets WHERE snippet = ?", (listbox.get("active"),))
     conn.commit()
     conn.close()
@@ -69,6 +74,12 @@ button = tk.Button(window, text="Add Snippet", command=add_snippet)
 button.pack()
 button = tk.Button(window, text="Delete Snippet", command=delete_snippet)
 button.pack()
+# load all snippets from the database button
+button = tk.Button(window, text="Load Snippets", command=load_snippets)
+button.pack()
+# clear the listbox
+button = tk.Button(window, text="Clear Listbox", command=clear_listbox)
+button.pack()
 # add text box to show snippet
 text = tk.Text(window, height=10, width=50)
 text.pack()
@@ -82,8 +93,7 @@ listbox.pack(side="bottom")
 
 
 def main():
-    try: 
-        load_snippets()
+    try: \
         window.mainloop()
         
     except Exception as e:
