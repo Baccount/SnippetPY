@@ -8,29 +8,22 @@ import sqlite3
 def clear_listbox():
     listbox.delete(0, "end")
 
-# Add a new snippet
 def add_snippet():
-    # add all text to a variable
-    txt = text.get("1.0", "end-1c")
-    # save the text
-    save_snippet(txt)
-    load_snippets()
+    # ? add each line in the text box to the listbox
+    for line in text.get("1.0", "end").splitlines():
+        if line != "":
+            listbox.insert("end", line)
+    
+    # clear the text box
+    text.delete("1.0", "end")
 
-def delete_snippet():
-    # delete the selected snippet in the listbox
-    listbox.delete("active")
-    # delete the snippet from the database
-    conn = sqlite3.connect("snippets.db")
-    c = conn.cursor()
-    # delete the snippet from the database using the snippet name and index
-    c.execute("DELETE FROM snippets WHERE snippet = ?", (listbox.get("active"),))
-    conn.commit()
-    conn.close()
 
 # load all snippets from the database and show them in the listbox
 def load_snippets():
     # check if the database exists
     if path.isfile("snippets.db"):
+        # clear the listbox
+        clear_listbox()
         # load the snippets from the database
         conn = sqlite3.connect("snippets.db")
         c = conn.cursor()
@@ -41,26 +34,33 @@ def load_snippets():
             listbox.insert("end", snippet[0])
         conn.close()
 
-
-def save_snippet(text):
-    # save the text using SQLite database
+def create_database():
     # create a new database if one doesn't exist
     if not path.isfile("snippets.db"):
         conn = sqlite3.connect("snippets.db")
         c = conn.cursor()
-        c.execute('''CREATE TABLE snippets
-                    (snippet text)''')
+        # create new database with one column for the snippet
+        c.execute("""CREATE TABLE snippets ( 
+            snippet text
+            )""")
         conn.commit()
         conn.close()
-    # add the snippet to the database
+
+
+
+
+def save_snippet():
+    # Save everything in the listbox to the database
     conn = sqlite3.connect("snippets.db")
     c = conn.cursor()
-    c.execute("INSERT INTO snippets VALUES (?)", (text,))
+    # delete all snippets from the database
+    c.execute("DELETE FROM snippets")
+    # add all snippets from the listbox to the database
+    for i in range(listbox.size()):
+        snippet = listbox.get(i)
+        c.execute("INSERT INTO snippets (snippet) VALUES (?)", (snippet,))
     conn.commit()
-    
-    
-
-
+    conn.close()
 
 
 
@@ -72,13 +72,15 @@ window.resizable(False, False)
 # add button to delete snippet
 button = tk.Button(window, text="Add Snippet", command=add_snippet)
 button.pack()
-button = tk.Button(window, text="Delete Snippet", command=delete_snippet)
-button.pack()
 # load all snippets from the database button
 button = tk.Button(window, text="Load Snippets", command=load_snippets)
 button.pack()
 # clear the listbox
 button = tk.Button(window, text="Clear Listbox", command=clear_listbox)
+# put button on the right side of the window
+button.pack(padx=10)
+# save all snippets to the database
+button = tk.Button(window, text="Save Snippets", command=save_snippet)
 button.pack()
 # add text box to show snippet
 text = tk.Text(window, height=10, width=50)
@@ -89,11 +91,23 @@ listbox = tk.Listbox(window, height=10, width=50, yscrollcommand=True, selectmod
 listbox.pack(side="bottom")
 
 
+def create_database():
+    # create a new database if one doesn't exist
+    if not path.isfile("snippets.db"):
+        conn = sqlite3.connect("snippets.db")
+        c = conn.cursor()
+        # create new database with one column for the snippet
+        c.execute("""CREATE TABLE snippets ( 
+            snippet text
+            )""")
+        conn.commit()
+        conn.close()
 
 
 
 def main():
-    try: \
+    try:
+        create_database()
         window.mainloop()
         
     except Exception as e:
