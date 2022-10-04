@@ -81,42 +81,47 @@ def save_snippet():
     conn.commit()
     conn.close()
 
-
+### ? Main Program Entry Point ###
 window = tk.Tk()
 window.title("Code Snippets")
 window.geometry("600x600")
 window.protocol("WM_DELETE_WINDOW", close_window)
 window.resizable(False, False)
+
+# * Add Snippet Button
 button = tk.Button(window, text="Add Snippet", command=add_snippet)
 button.place(x=0, y=0)
 
+# * Load Snippets Button
 button = tk.Button(window, text="Load Snippets", command=load_snippets)
 button.place(x=0, y=25)
 
+# * Clear Listbox Button
 button = tk.Button(window, text="Clear Listbox", command=clear_listbox)
-# put button on the right side of the window
 button.pack()
-# save all snippets to the database
+
+# * Save Snippets Button
 button = tk.Button(window, text="Save Snippets", command=save_snippet)
 button.place(x=470, y=00)
-# about the program
+
+# * About button
 button = tk.Button(window, text="About", command=about)
 button.place(x=520, y=28)
-# delete the selected snippet
+
+# * Delete Snippet Button
 button = tk.Button(window, text="Delete Snippet", command=delete_snippet)
-# put button on the upper right side of the window
 button.pack()
-# add text box to show snippet
+
+# * Text Box
 text = tk.Text(window, height=10, width=50, wrap="word", yscrollcommand=True)
 text.pack(side="bottom", fill="both", expand=True, padx=10, pady=10)
 
-# ? Scrollbar and Listbox
+# * Scrollbar and Listbox
 scrollbar = tk.Scrollbar(window)
 listbox = tk.Listbox(window, yscrollcommand=scrollbar.set)
 listbox.pack(side="left", fill="both", expand=True, padx=10, pady=10)
 scrollbar.config(command=listbox.yview, bg="#282a36", activebackground="#282a36", troughcolor="#282a36", borderwidth=0)
 scrollbar.pack(side="right", fill="y")
-
 
 
 def main():
