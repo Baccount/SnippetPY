@@ -5,6 +5,7 @@ import tkinter as tk
 from os import path
 
 
+
 def close_window():
     # save on close
     save_snippet()
@@ -84,8 +85,6 @@ def save_snippet():
 window = tk.Tk()
 window.title("Code Snippets")
 window.geometry("600x600")
-# float window to the top
-window.attributes("-topmost", True)
 window.protocol("WM_DELETE_WINDOW", close_window)
 window.resizable(False, False)
 button = tk.Button(window, text="Add Snippet", command=add_snippet)
@@ -110,12 +109,14 @@ button.pack()
 # add text box to show snippet
 text = tk.Text(window, height=10, width=50, wrap="word", yscrollcommand=True)
 text.pack(side="bottom", fill="both", expand=True, padx=10, pady=10)
-# add listbox to show saved snippets and scrollbar allow copy and paste
-listbox = tk.Listbox(
-    window, height=15, width=65, yscrollcommand=True, selectmode="single"
-)
-# place on bottom of window
-listbox.pack(side="bottom")
+
+# ? Scrollbar and Listbox
+scrollbar = tk.Scrollbar(window)
+listbox = tk.Listbox(window, yscrollcommand=scrollbar.set)
+listbox.pack(side="left", fill="both", expand=True, padx=10, pady=10)
+scrollbar.config(command=listbox.yview, bg="#282a36", activebackground="#282a36", troughcolor="#282a36", borderwidth=0)
+scrollbar.pack(side="right", fill="y")
+
 
 
 def main():
