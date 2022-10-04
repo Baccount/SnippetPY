@@ -84,6 +84,8 @@ def save_snippet():
 window = tk.Tk()
 window.title("Code Snippets")
 window.geometry("600x600")
+# float window to the top
+window.attributes("-topmost", True)
 window.protocol("WM_DELETE_WINDOW", close_window)
 window.resizable(False, False)
 button = tk.Button(window, text="Add Snippet", command=add_snippet)

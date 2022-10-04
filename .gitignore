@@ -1,0 +1,5 @@
+snippets.db
+.trunk/.gitignore
+.trunk/trunk.yaml
+.trunk/config/.flake8
+.trunk/config/.isort.cfg
