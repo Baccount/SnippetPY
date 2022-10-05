@@ -5,7 +5,6 @@ import tkinter as tk
 from os import path
 
 
-
 def close_window():
     # save on close
     save_snippet()
@@ -36,8 +35,7 @@ def add_snippet():
     for line in text.get("1.0", "end").splitlines():
         if line != "":
             listbox.insert("end", line)
-
-    # clear the text box
+    # reset the text box and the cursor
     text.delete("1.0", "end")
 
 
@@ -69,7 +67,6 @@ def create_database():
         conn.commit()
         conn.close()
 
-
 def save_snippet():
     # Save everything in the listbox to the database
     conn = sqlite3.connect("snippets.db")
@@ -80,6 +77,7 @@ def save_snippet():
         c.execute("INSERT INTO snippets (snippet) VALUES (?)", (snippet,))
     conn.commit()
     conn.close()
+
 
 ### ? Main Program Entry Point ###
 window = tk.Tk()
@@ -112,15 +110,18 @@ button.place(x=520, y=28)
 button = tk.Button(window, text="Delete Snippet", command=delete_snippet)
 button.pack()
 
-# * Text Box
-text = tk.Text(window, height=10, width=50, wrap="word", yscrollcommand=True)
-text.pack(side="bottom", fill="both", expand=True, padx=10, pady=10)
+# * Text Box add to listbox on enter
+text = tk.Text(window, wrap="word", yscrollcommand=True, width=250, height=4)
+text.bind("<Return>", lambda x: add_snippet())
+# shift cursor to the 0 in the text box
+text.focus_set()
+# text box fill the y axis
+text.pack( side="bottom")
 
 # * Scrollbar and Listbox
 scrollbar = tk.Scrollbar(window)
 listbox = tk.Listbox(window, yscrollcommand=scrollbar.set)
 listbox.pack(side="left", fill="both", expand=True, padx=10, pady=10)
-scrollbar.config(command=listbox.yview, bg="#282a36", activebackground="#282a36", troughcolor="#282a36", borderwidth=0)
 scrollbar.pack(side="right", fill="y")
 
 
