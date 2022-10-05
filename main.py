@@ -26,37 +26,21 @@ def about():
     name_label.pack()
 
 
-def clear_listbox():
-    listbox.delete(0, "end")
-
-
-def add_snippet():
-    # ? add each line in the text box to the listbox
-    for line in text.get("1.0", "end").splitlines():
-        if line != "":
-            listbox.insert("end", line)
-    # reset the text box and the cursor
+def clear_textbox():
+    # clear the textbox
     text.delete("1.0", "end")
 
 
-def delete_snippet():
-    # delete the selected snippet
-    listbox.delete("active")
 
-
+# load the snippets from the database into the textbox
 def load_snippets():
-    # check if the database exists
-    if path.isfile("snippets.db"):
-        # clear the listbox
-        clear_listbox()
-        conn = sqlite3.connect("snippets.db")
-        c = conn.cursor()
-        c.execute("SELECT * FROM snippets")
-        snippets = c.fetchall()
-        for snippet in snippets:
-            listbox.insert("end", snippet[0])
-        conn.close()
-
+    conn = sqlite3.connect("snippets.db")
+    c = conn.cursor()
+    c.execute("SELECT * FROM snippets")
+    result = c.fetchone()
+    if result is not None:
+        text.insert("end", result[0])
+    conn.close()
 
 def create_database():
     # create a new database if one doesn't exist
@@ -68,13 +52,11 @@ def create_database():
         conn.close()
 
 def save_snippet():
-    # Save everything in the listbox to the database
+    # Save everything in the textbox to the database
     conn = sqlite3.connect("snippets.db")
     c = conn.cursor()
     c.execute("DELETE FROM snippets")
-    for i in range(listbox.size()):
-        snippet = listbox.get(i)
-        c.execute("INSERT INTO snippets (snippet) VALUES (?)", (snippet,))
+    c.execute("INSERT INTO snippets VALUES (?)", (text.get("1.0", "end"),))
     conn.commit()
     conn.close()
 
@@ -86,16 +68,13 @@ window.geometry("600x600")
 window.protocol("WM_DELETE_WINDOW", close_window)
 window.resizable(False, False)
 
-# * Add Snippet Button
-button = tk.Button(window, text="Add Snippet", command=add_snippet)
-button.place(x=0, y=0)
 
 # * Load Snippets Button
 button = tk.Button(window, text="Load Snippets", command=load_snippets)
 button.place(x=0, y=25)
 
-# * Clear Listbox Button
-button = tk.Button(window, text="Clear Listbox", command=clear_listbox)
+# * Clear text Button
+button = tk.Button(window, text="Clear Text", command=clear_textbox)
 button.pack()
 
 # * Save Snippets Button
@@ -106,23 +85,13 @@ button.place(x=470, y=00)
 button = tk.Button(window, text="About", command=about)
 button.place(x=520, y=28)
 
-# * Delete Snippet Button
-button = tk.Button(window, text="Delete Snippet", command=delete_snippet)
-button.pack()
 
 # * Text Box add to listbox on enter
-text = tk.Text(window, wrap="word", yscrollcommand=True, width=250, height=4)
-text.bind("<Return>", lambda x: add_snippet())
+text = tk.Text(window, wrap="word", yscrollcommand=True, width=250, height=40)
 # shift cursor to the 0 in the text box
 text.focus_set()
 # text box fill the y axis
 text.pack( side="bottom")
-
-# * Scrollbar and Listbox
-scrollbar = tk.Scrollbar(window)
-listbox = tk.Listbox(window, yscrollcommand=scrollbar.set)
-listbox.pack(side="left", fill="both", expand=True, padx=10, pady=10)
-scrollbar.pack(side="right", fill="y")
 
 
 def main():
