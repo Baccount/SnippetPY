@@ -14,7 +14,11 @@ def close_window():
 def about():
     about_window = tk.Toplevel()
     about_window.title("About")
-    about_window.geometry("300x100")
+    about_window.geometry("200x100")
+    # center the window
+    x = (window.winfo_screenwidth() // 2) - (200 // 2)
+    y = (window.winfo_screenheight() // 2) - (100 // 2)
+    about_window.geometry('{}x{}+{}+{}'.format(200, 100, x, y))
     about_window.resizable(False, False)
     about_window.grab_set()
     about_window.focus_set
@@ -64,9 +68,13 @@ def save_snippet():
 ### ? Main Program Entry Point ###
 window = tk.Tk()
 window.title("Code Snippets")
-window.geometry("600x600")
+window.geometry("400x400")
 window.protocol("WM_DELETE_WINDOW", close_window)
 window.resizable(False, False)
+# center the window
+x = (window.winfo_screenwidth() // 2) - (400 // 2)
+y = (window.winfo_screenheight() // 2) - (400 // 2)
+window.geometry('{}x{}+{}+{}'.format(400, 400, x, y))
 
 
 # * Load Snippets Button
@@ -79,15 +87,15 @@ button.pack()
 
 # * Save Snippets Button
 button = tk.Button(window, text="Save Snippets", command=save_snippet)
-button.place(x=470, y=00)
+button.place(x=0, y=0)
 
 # * About button
 button = tk.Button(window, text="About", command=about)
-button.place(x=520, y=28)
+button.place(x=320, y=0)
 
 
 # * Text Box add to listbox on enter
-text = tk.Text(window, wrap="word", yscrollcommand=True, width=250, height=40)
+text = tk.Text(window, wrap="word", yscrollcommand=True, width=200, height=40)
 # shift cursor to the 0 in the text box
 text.focus_set()
 # text box fill the y axis
