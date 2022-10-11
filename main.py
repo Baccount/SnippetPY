@@ -21,7 +21,7 @@ def about():
     about_window.geometry('{}x{}+{}+{}'.format(200, 100, x, y))
     about_window.resizable(False, False)
     about_window.grab_set()
-    about_window.focus_set
+    about_window.focus_set()
     # add a label to the window
     about_label = tk.Label(about_window, text="Code Snippets")
     about_label.pack()
@@ -42,8 +42,8 @@ def load_snippets():
     c = conn.cursor()
     c.execute("SELECT * FROM snippets")
     result = c.fetchone()
-    if result is not None and result[0] != "\n":
-        text.insert("end", result[0])
+    if result is not None:
+        text.insert("1.0", result[0])
     conn.close()
 
 def create_database():
@@ -56,14 +56,15 @@ def create_database():
         conn.close()
 
 def save_snippet():
-    # Save everything in the textbox to the database
+    # Save all the text in the textbox to the database
     conn = sqlite3.connect("snippets.db")
     c = conn.cursor()
     c.execute("DELETE FROM snippets")
-    c.execute("INSERT INTO snippets VALUES (?)", (text.get("1.0", "end"),))
+    # get the text from the textbox without the newline
+    snippet = text.get("1.0", "end-1c")
+    c.execute("INSERT INTO snippets VALUES (?)", (snippet,))
     conn.commit()
     conn.close()
-
 
 ### ? Main Program Entry Point ###
 window = tk.Tk()
