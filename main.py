@@ -47,11 +47,11 @@ def load_snippets():
     conn.close()
 
 def create_database():
-    # create a new database if one doesn't exist
-    if not path.isfile("snippets.db"):
+    # create a new database and table if it doesn't exist
+    if not path.exists("snippets.db"):
         conn = sqlite3.connect("snippets.db")
         c = conn.cursor()
-        c.execute("""CREATE TABLE snippets (snippet text)""")
+        c.execute("CREATE TABLE snippets (snippet text)")
         conn.commit()
         conn.close()
 
