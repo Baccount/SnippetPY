@@ -42,7 +42,7 @@ def load_snippets():
     c = conn.cursor()
     c.execute("SELECT * FROM snippets")
     result = c.fetchone()
-    if result is not None:
+    if result is not None and result[0] != "\n":
         text.insert("end", result[0])
     conn.close()
 
