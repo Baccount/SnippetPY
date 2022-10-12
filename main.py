@@ -1,8 +1,7 @@
-# keep a saved list of code snippets for later use
-
 import sqlite3
 import tkinter as tk
 from os import path
+VERSION = 0.01
 
 
 def close_window():
@@ -10,6 +9,25 @@ def close_window():
     save_snippet()
     window.destroy()
 
+def check_for_updates() -> bool:
+        import urllib.request
+        # get the contents of the update.txt file
+        url = "https://raw.githubusercontent.com/Baccount/SnippetPY/main/update.txt"
+        req = urllib.request.Request(url)
+        with urllib.request.urlopen(req) as response:
+            the_page = response.read()
+        # decode the bytes
+        the_page = the_page.decode("utf-8")
+        # strip the newline
+        the_page = the_page.strip()
+        # check if the version is the same
+        if float(the_page) > VERSION:
+            return True
+        return False
+
+def open_Updates():
+    import webbrowser
+    webbrowser.open("https://github.com/Baccount/SnippetPY/tree/main")
 
 def about():
     about_window = tk.Toplevel()
@@ -25,10 +43,18 @@ def about():
     # add a label to the window
     about_label = tk.Label(about_window, text="Code Snippets")
     about_label.pack()
+    # add a button to check for updates if check_for_updates() returns True
+    if check_for_updates():
+        # make the label blue and clickable
+        update_label = tk.Label(about_window, text=f"Update Available")
+        update_label.pack()
+        open_Updates()
+    else:
+        update_label = tk.Label(about_window, text="No Updates")
+        update_label.pack()
     # add name to the window
     name_label = tk.Label(about_window, text="By: Brandon Moore")
     name_label.pack()
-
 
 def clear_textbox():
     # clear the textbox
