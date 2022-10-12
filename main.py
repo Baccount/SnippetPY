@@ -46,7 +46,7 @@ def about():
     # add a button to check for updates if check_for_updates() returns True
     if check_for_updates():
         # make the label blue and clickable
-        update_label = tk.Label(about_window, text=f"Update Available")
+        update_label = tk.Label(about_window, text="Update Available")
         update_label.pack()
         open_Updates()
     else:
