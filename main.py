@@ -77,30 +77,23 @@ x = (window.winfo_screenwidth() // 2) - (400 // 2)
 y = (window.winfo_screenheight() // 2) - (400 // 2)
 window.geometry('{}x{}+{}+{}'.format(400, 400, x, y))
 
-
-# * Load Snippets Button
-button = tk.Button(window, text="Load Snippets", command=load_snippets)
-button.place(x=0, y=25)
-
 # * Clear text Button
-button = tk.Button(window, text="Clear Text", command=clear_textbox)
-button.pack()
+button1 = tk.Button(text="Clear Text", command=clear_textbox)
+button1.place(x=0, y=0)
 
-# * Save Snippets Button
-button = tk.Button(window, text="Save Snippets", command=save_snippet)
-button.place(x=0, y=0)
 
 # * About button
-button = tk.Button(window, text="About", command=about)
-button.place(x=320, y=0)
+button2 = tk.Button(window, text="About", command=about)
+button2.pack()
+button2.place(x=320, y=0)
 
 
 # * Text Box add to listbox on enter
-text = tk.Text(window, wrap="word", yscrollcommand=True, width=200, height=40)
+text = tk.Text(window, wrap="word", yscrollcommand=True)
 # shift cursor to the 0 in the text box
 text.focus_set()
-# text box fill the y axis
-text.pack( side="bottom")
+# text box fill under the buttons
+text.place(x=0, y=30, width=400, height=370)
 
 
 def main():
@@ -111,7 +104,6 @@ def main():
 
     except Exception as e:
         print(e)
-        print("Error: unable to start thread")
 
 
 if __name__ == "__main__":
